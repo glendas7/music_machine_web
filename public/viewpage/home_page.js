@@ -79,12 +79,12 @@ function buttonListener(doc) {
   const status1 = document.getElementById('status-button1');
   const status2 = document.getElementById('status-button2');
   const buttonDoc = doc.data();
-  if (buttonDoc['button1_on']) {
+  if (buttonDoc['button1']) {
     status1.innerHTML = 'ON';
   } else {
     status1.innerHTML = 'OFF';
   }
-  if (buttonDoc['button2_on']) {
+  if (buttonDoc['button2']) {
     status2.innerHTML = 'ON';
   } else {
     status2.innerHTML = 'OFF';

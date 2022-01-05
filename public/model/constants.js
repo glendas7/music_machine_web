@@ -3,11 +3,11 @@ export const DOCNAME_LEDS = 'DOC_LEDS';
 export const DOCNAME_BUTTONS = 'DOC_BUTTONS'
 
 export const docButtons = {
-  button1_on: false,
-  button2_on: false,
+  button1: false,
+  button2: false,
 }
 
 export const docLEDs = {
-  led1_on: false,
-  led2_on: false,
+  led1: false,
+  led2: false,
 }
