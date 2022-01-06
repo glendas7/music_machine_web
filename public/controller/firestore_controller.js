@@ -17,5 +17,6 @@ export async function updateDocForLED(update) {
 }
 
 export function attachRealtimeListener(collection, document, callback) {
-	onSnapshot(doc(db, collection, document), callback);
+	const unsubscribeListener = onSnapshot(doc(db, collection, document), callback);
+	return unsubscribeListener;
 }
