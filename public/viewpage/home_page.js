@@ -1,7 +1,9 @@
 import * as Auth from '../controller/auth.js'
 import * as Elements from './elements.js'
 import * as Constants from '../model/constants.js'
-import {updateDocForLED, attachRealtimeListener, initFirestoreDocs } from '../controller/firestore_controller.js';
+import {
+  updateDocForLED, attachRealtimeListener, initFirestoreDocs,
+} from '../controller/firestore_controller.js';
 
 const noMonitor = 'No Monitor';
 
@@ -13,7 +15,6 @@ export function addEventListeners() {
     if (unsubButtonsDoc) {
       unsubButtonsDoc();
     }
-    console.log('window about to unload');
   });
 
   Elements.buttonInitConfig.addEventListener('click', async e => {
@@ -70,8 +71,8 @@ export function home_page() {
     if (label == 'Start') {
       e.target.innerHTML = 'Stop';
       // listen to Firestore doc changes
-	  unsubButtonsDoc = attachRealtimeListener(Constants.COLLECTION,
-			Constants.DOCNAME_BUTTONS, buttonListener);
+      unsubButtonsDoc = attachRealtimeListener(Constants.COLLECTION,
+        Constants.DOCNAME_BUTTONS, buttonListener);
     } else {
       e.target.innerHTML = 'Start';
       const status1 = document.getElementById('status-button1');
@@ -87,10 +88,10 @@ export function home_page() {
     const label = e.target.innerHTML;
     if (label == 'Turn ON') {
       e.target.innerHTML = 'Turn OFF';
-      updateDocForLED({led1: true});
+      updateDocForLED({ led1: true });
     } else {
       e.target.innerHTML = 'Turn ON';
-      updateDocForLED({led1: false});
+      updateDocForLED({ led1: false });
     }
   });
 
