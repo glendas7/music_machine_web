@@ -65,7 +65,7 @@ export async function home_page() {
     openButton.disabled = true;
   });
 
-  openButton.addEventListener('click', e => {
+  openButton.addEventListener('click', e =>{
     updateDocForVisitors({ permission: true });
     updateDocForVisitors({ visitor_status: null });
     document.getElementById('image').src = doorPic
