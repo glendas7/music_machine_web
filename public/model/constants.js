@@ -10,7 +10,6 @@ export const noteData = {
 
 export const freqData = {
   frequency: "off",
-  potFrequency: "off",
 }
 
 export const ledData = {
