@@ -49,7 +49,6 @@ export function addEventListeners() {
 
     } else {
       currentUser = null;
-      // console.log(`Auth change: ${user}`)
 
       let elements = document.getElementsByClassName('pre-auth');
       for (let i = 0; i < elements.length; i++) {

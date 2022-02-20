@@ -4,12 +4,14 @@ import {
 
 import * as Constants from '../model/constants.js'
 
-const db = getFirestore();
+const db = getFirestore()
+
 
 export async function initFirestoreDocs() {
-	await setDoc(doc(db, Constants.COLLECTION, Constants.DOCNAME_CAMERA), Constants.docCamera)
-	await setDoc(doc(db, Constants.COLLECTION, Constants.DOCNAME_PICS), Constants.docPics)
-	await setDoc(doc(db, Constants.COLLECTION, Constants.DOCNAME_VISITOR), Constants.docVisitor)
+	await setDoc(doc(db, Constants.COLLECTION, Constants.NOTE_DATA), Constants.noteData)
+	await setDoc(doc(db, Constants.COLLECTION, Constants.FREQ_DATA), Constants.freqData)
+	await setDoc(doc(db, Constants.COLLECTION, Constants.LED_DATA), Constants.ledData)
+	await setDoc(doc(db, Constants.COLLECTION, Constants.BUTTON_DATA), Constants.buttonData)
 }
 
 export function attachRealtimeListener(collection, document, callback) {
@@ -17,8 +19,24 @@ export function attachRealtimeListener(collection, document, callback) {
 	return unsubscribeListener;
 }
 
-export async function updateDocForVisitors(update) {
-	const docRef = doc(db, Constants.COLLECTION, Constants.DOCNAME_VISITOR);
+export async function updateNoteData(update) {
+	const docRef = doc(db, Constants.COLLECTION, Constants.NOTE_DATA);
+	await updateDoc(docRef, update);
+}
+
+
+export async function updateFreqData(update) {
+	const docRef = doc(db, Constants.COLLECTION, Constants.FREQ_DATA);
+	await updateDoc(docRef, update);
+}
+
+export async function updateLedData(update) {
+	const docRef = doc(db, Constants.COLLECTION, Constants.LED_DATA);
+	await updateDoc(docRef, update);
+}
+
+export async function updateButtonData(update) {
+	const docRef = doc(db, Constants.COLLECTION, Constants.BUTTON_DATA);
 	await updateDoc(docRef, update);
 }
 

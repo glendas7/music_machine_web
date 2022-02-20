@@ -1,19 +1,22 @@
 export const COLLECTION = 'RPI_DATA';
-export const DOCNAME_CAMERA = 'DOC_CAMERA';
-export const DOCNAME_PICS = 'DOC_PICS';
-export const DOCNAME_VISITOR = 'DOC_VISITOR';
+export const NOTE_DATA = 'NOTE_DATA';
+export const FREQ_DATA = 'FREQ_DATA';
+export const LED_DATA = 'LED_DATA';
+export const BUTTON_DATA = 'BUTTON_DATA';
 
-
-export const docCamera = {
-  url: null,
-  timestamp: 0,
+export const noteData = {
+  note: "off",
 }
 
-export const docPics = {
-  pic1: null,
+export const freqData = {
+  frequency: "off",
+  potFrequency: "off",
 }
 
-export const docVisitor = {
-  visitor_status: null,
-  permission: null,
+export const ledData = {
+  potOff: false,
+}
+
+export const buttonData = {
+  powerButton: "off",
 }

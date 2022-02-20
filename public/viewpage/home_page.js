@@ -2,15 +2,15 @@ import * as Auth from '../controller/auth.js'
 import * as Elements from './elements.js'
 import * as Constants from '../model/constants.js'
 import {
-  updateDocForVisitors, attachRealtimeListener, initFirestoreDocs,
+  updateNoteData, updateFreqData, updateLedData, updateButtonData, attachRealtimeListener, initFirestoreDocs,
 } from '../controller/firestore_controller.js'
 
 export let cameraDoc = null
 export let pictureDoc = null
-let closeButton
-let openButton
-let loadingPic
-let doorPic
+let switchToPiButton
+let powerButton
+
+
 
 export async function home_page() {
   if (!Auth.currentUser) {
@@ -21,78 +21,96 @@ export async function home_page() {
   }
   await initFirestoreDocs()
  
-  updateDocForVisitors({ permission: false });
-  updateDocForVisitors({ visitor_status: null });
+  updateFreqData({ frequency: "off" });
+  updateNoteData({ note: "off" })
+  updateLedData({ potOff: true })
+  updateButtonData({ powerButton: "off" })
 
-  let html = '<h3 class="d-flex justify-content-center m-3">Control Panel<h3>';
+  let html = '';
   html += `
-  <div style="background-color:rgb(240,248,255); margin-top: 50px;">
-    <div>
-      <h5>Door Control</h5>
-      <button id="button-close" type="input" class="btn btn-outline-primary ms-3" disabled>CLOSED</button>
-      <button id="button-open" type="input" class="btn btn-outline-primary ms-3" disabled>OPEN</button>
-
-    </div>
+  <div class="d-flex justify-content-center m-3" content-box">
+    <button type="submit" id="power-button" class="btn d-flex justify-content-center m-3">Power Off</button>
+    <button type="submit" id="toggle-pi-button" class="btn" disabled>Switch to Pi</button>
+  </div> 
+  <div class="d-flex justify-content-center m-3" content-box">
+    <h3>Frequency: </h3>
+    <div class= "freq-content" id="frequency-content"></div>
   </div>
-
-  <div style="background-color:rgb(240,248,255); margin-top: 50px;">
-    <div id="image-timestamp"></div>
-    <img id="image" src="../model/images/front_door.png" height=300>
-  </div>
+  <div class="d-flex justify-content-center m-3">
+    <h5>Notes: </h5>
+    <div class="note-container">
   `;
 
   Elements.root.innerHTML = html;
 
-  loadingPic = '../model/images/fall-out-wait.gif'
-  doorPic = '../model/images/front_door.png'
-  document.getElementById('image-timestamp').innerText = ""
 
-  closeButton = document.getElementById('button-close')
-  openButton = document.getElementById('button-open')
-  closeButton.disabled = true
-  openButton.disabled = true
+  freqDataDoc = attachRealtimeListener(Constants.COLLECTION,
+    Constants.FREQ_DATA, freqDataListener); 
+  
+  var notesList = ['G4','G#4','A4','A#4', 'C5','C#5','D5','D#5','E5','F5','F#5','G5','G#5','A5']    
+  notesList.forEach(note => {
+    html += addNoteButton(note)
+  })
 
-  cameraDoc = attachRealtimeListener(Constants.COLLECTION,
-    Constants.DOCNAME_CAMERA, cameraListener); 
-  pictureDoc = attachRealtimeListener(Constants.COLLECTION, Constants.DOCNAME_PICS, pictureListener);
+  html += `
+      </div>
+    </div>
+    `
+  Elements.root.innerHTML = html
 
-  closeButton.addEventListener('click', e => {
-    updateDocForVisitors({ permission: false });
-    updateDocForVisitors({ visitor_status: null });
-    document.getElementById('image').src = doorPic
-    document.getElementById('image-timestamp').innerText = ""
-    closeButton.disabled = true;
-    openButton.disabled = true;
-  });
+  document.getElementById('power-button').addEventListener('click', e => {
+    powerButton = document.getElementById('power-button')
+    if (powerButton.innerText == "Power Off") {
+      console.log('click on ')
+      updateLedData({ potOff: false })
+      updateButtonData({ powerButton: "on" })
+      powerButton.innerText = "Power On"
+    }
+    else if (powerButton.innerText == "Power On") {
+      console.log('click off ')
+      updateLedData({ potOff: true })
+      updateButtonData({ powerButton: "off" })
+      powerButton.innerText = "Power Off"
+    }
+})
 
-  openButton.addEventListener('click', e =>{
-    updateDocForVisitors({ permission: true });
-    updateDocForVisitors({ visitor_status: null });
-    document.getElementById('image').src = doorPic
-    document.getElementById('image-timestamp').innerText = ""
-    openButton.disabled = true;
-    closeButton.disabled = true;
-  });
+  switchToPiButton = document.getElementById('toggle-pi-button')
+  switchToPiButton.addEventListener('click', e => {
+    switchToPiButton.disabled = true
+    updateLedData({ potOff: false })
+    updateNoteData({ note: "off" })
+    updateFreqData({ frequency: "off" });
+})
+
+  const noteForms = document.getElementsByClassName('note-forms')
+  for (let n = 0; n < noteForms.length; n++) {
+      noteForms[n].addEventListener('submit', async e => {
+          e.preventDefault()
+        const noteVal = e.target.noteValue.value
+        switchToPiButton.disabled = false
+        updateNoteData({ note: noteVal })
+        updateLedData({ potOff: true})
+        console.log(noteVal)
+      })
+  }
 
 }
 
-function cameraListener(doc) {
-  const cameraDoc = doc.data()
-  if (cameraDoc['url'] != null) {
-    document.getElementById('image').src = loadingPic
-    const cameraDoc = doc.data();
-    const timestamp = cameraDoc['timestamp'];
-    document.getElementById('image-timestamp').innerText = new Date(timestamp / 1e6).toString();
+function addNoteButton(note) {
+  return `
+  <form method= "post" class= "note-forms">
+  <input type ="hidden" name ="noteValue" value="${note}">
+  <button type="submit" class="btn">${note}</button>
+  </form>
+  `
+}
+  
+function freqDataListener(doc) {
+  const freqData = doc.data()
+  if (freqData['frequency']) {
+    document.getElementById('frequency-content').innerText = freqData['frequency']
   }
 }
 
-function pictureListener(doc) {
-  const pictureDoc = doc.data();
-  // updateDocForVisitors({ permission: false });
-  // updateDocForVisitors({ visitor_status: true });
-  if (pictureDoc['pic1'] != null) {
-    document.getElementById('image').src = pictureDoc['pic1']
-    openButton.disabled = false
-    closeButton.disabled = false
-  }
-}
+
+

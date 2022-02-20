@@ -1,0 +1,28 @@
+.content-box{
+    background-color: blue;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.note-container form,
+.note-container form div {
+    display: inline;
+}
+
+.note-container button {
+    display: inline;
+    vertical-align: middle;
+}
+
+.btn{
+    background-color: rgb(23, 235, 48);
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    
+}
+.btn:hover {
+    background-color: rgb(255, 174, 0);
+}
+.freq-content{
+    font-weight: bold;
+}
